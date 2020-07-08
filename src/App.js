@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { CSVReader } from 'react-papaparse'
-
+import Table from './table'
 export default class CSVReader4 extends Component {
   handleOnDrop = (data) => {
     const Year=data[0].data[1];
@@ -49,11 +49,9 @@ for(i=i+2;i<data.length;i++){
   parallel_variation.push([parallel_variation_count,data[i].data[0]]);
   parallel_variation_count=parallel_variation_count+1;
 }
-
-    console.log(cards);
-    console.log(parallel_sets);
-    console.log(parallel_variation);
-
+console.log(cards)
+console.log(parallel_sets)
+console.log(parallel_variation)
 }
 
   handleOnError = (err, file, inputElem, reason) => {
@@ -77,8 +75,10 @@ for(i=i+2;i<data.length;i++){
           addRemoveButton
           onRemoveFile={this.handleOnRemoveFile}
         >
+
           <span>Click to upload.</span>
         </CSVReader>
+        <Table></Table>
       </>
     )
   }
