@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { CSVReader } from 'react-papaparse'
 import Table from './table'
+import OverrideEverythingSheet from './Override.js'
 export default class CSVReader4 extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +25,14 @@ export default class CSVReader4 extends Component {
     const cards=[];
     const parallel_sets=[];
     const parallel_variation=[];
-    cards.push([{value:""},{value:"Player"},{value:"Team"}])
+    const card_columns=[{ label: 'ID', width: '20%'},{ label: 'Player Name', width: '20%' },
+    { label: 'Team', width: '20%' },
+    { label: 'Variation', width: '20%' }];
+    const parallel_sets_columns=[{ label: 'parallel_set_ID', width: '30%' },
+    { label: 'parallel set Name', width: '20%' },
+    { label: 'Serial Number', width: '20%' },];
+    const parallel_sets_variations_columns=[{ label: 'ID', width: '30%' },
+    { label: 'parallel_variation', width: '20%' },];
     for (i = 4; i < data.length; i++) {
       if(data[i].data[0]!==""){
       if (data[i].data[2]==="") {
@@ -42,7 +50,6 @@ export default class CSVReader4 extends Component {
       break;
     }
   }
-  parallel_sets.push([{value:""},{value:"Parallel Sets"}])
   for(i=i+2;i<data.length;i++){
     if(data[i].data[0]!==""){
       if(data[i].data[1]===""){
@@ -58,21 +65,25 @@ export default class CSVReader4 extends Component {
       break;
     }
   }
-  parallel_variation.push([{value:""},{value:"Parallel Variations"}])
 
   for(i=i+2;i<data.length;i++){
     parallel_variation.push([{value:parallel_variation_count},{value:data[i].data[0]}]);
     parallel_variation_count=parallel_variation_count+1;
   }
+
   console.log(cards)
   console.log(parallel_sets)
   console.log(parallel_variation)
-    this.setState({ cards });
+  this.setState({ cards });
+  var cards_selection = new Array(cards.length).fill(false);
+  var parallel_sets_selection=new Array(parallel_sets.length).fill(false);
+  var  parallel_sets_variations_selection=new Array(parallel_variation.length).fill(false);
 
-    // update child table component's state here once data has been parsed
-    this.tableElement.current.setState({grid:cards});
-    this.tableElement_parallel.current.setState({grid:parallel_sets});
-    this.tableElement_parallel_variation.current.setState({grid:parallel_variation});
+
+      // update child table component's state here once data has been parsed
+    this.tableElement.current.setState({grid:cards,columns:card_columns,selections:cards_selection});
+    this.tableElement_parallel.current.setState({grid:parallel_sets,columns:parallel_sets_columns,selections:parallel_sets_selection});
+    this.tableElement_parallel_variation.current.setState({grid:parallel_variation,columns:parallel_sets_variations_columns,selections:parallel_sets_variations_selection});
 
   }
   handleOnError = (err, file, inputElem, reason) => {
@@ -80,9 +91,9 @@ export default class CSVReader4 extends Component {
   }
   handleOnRemoveFile = (data) => {
     console.log('---------------------------')
-    this.tableElement.current.setState({grid:[]});
-    this.tableElement_parallel.current.setState({grid:[]});
-    this.tableElement_parallel_variation.current.setState({grid:[]});
+    this.tableElement.current.setState({grid:[],columns:[],selections:[]});
+    this.tableElement_parallel.current.setState({grid:[],columns:[],selections:[]});
+    this.tableElement_parallel_variation.current.setState({grid:[],columns:[],selections:[]});
 
     console.log(data)
     console.log('---------------------------')
@@ -100,9 +111,9 @@ export default class CSVReader4 extends Component {
         >
           <span>Click to upload.</span>
         </CSVReader>
-        <Table ref={this.tableElement}></Table>
-        <Table ref={this.tableElement_parallel}></Table>
-        <Table ref={this.tableElement_parallel_variation}></Table>
+        <OverrideEverythingSheet ref={this.tableElement}></OverrideEverythingSheet>
+        <OverrideEverythingSheet ref={this.tableElement_parallel}></OverrideEverythingSheet>
+        <OverrideEverythingSheet ref={this.tableElement_parallel_variation}></OverrideEverythingSheet>
 
       </>
     )
